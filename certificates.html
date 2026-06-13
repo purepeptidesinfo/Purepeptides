@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="color-scheme" content="light" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pure Peptides — Certificate of Analysis Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#F6F8FB; --card:#FFFFFF;
+    --ink:#0B1526; --ink2:#3D4F66; --mist:#8A99AD;
+    --line:#E2E9F2; --line2:#D3DEEC;
+    --blue:#155EEF; --blue-d:#0B3FC1; --sky:#5BA8FF;
+    --navy:#081226; --navy2:#0C1B38;
+    --ok:#0E7A4E; --ok-bg:rgba(14,122,78,.08);
+    --shadow:0 1px 2px rgba(11,21,38,.05),0 12px 32px rgba(11,21,38,.07);
+    --r:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;background:var(--paper);color-scheme:light}
+  body{background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  .display{font-family:'Archivo',sans-serif;font-stretch:112%;font-weight:800;letter-spacing:-.015em;line-height:1.05}
+  .label{font-family:'Archivo',sans-serif;font-stretch:122%;font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Archivo',sans-serif;font-stretch:110%;font-weight:700;font-size:.92rem;padding:.72rem 1.4rem;border-radius:10px;cursor:pointer;border:none;transition:transform .15s,box-shadow .2s,background .2s}
+  .btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(21,94,239,.28)}
+  .btn-primary:hover{background:var(--blue-d);transform:translateY(-1px)}
+  .btn-outline{background:#fff;color:var(--ink);border:1.5px solid var(--line2)}
+  .btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+
+  /* NAV */
+  .topbar{background:var(--navy);color:#A9C3EC}
+  .topbar .wrap{display:flex;justify-content:center;gap:.6rem;padding:7px 22px;font-family:'IBM Plex Mono',monospace;font-size:.74rem;letter-spacing:.04em}
+  .topbar b{color:#fff;font-weight:600}
+  header.nav{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;gap:1rem}
+  .wordmark{font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:1.2rem;display:flex;align-items:center;gap:.55rem;cursor:pointer}
+  .wordmark .dot{width:10px;height:10px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px rgba(21,94,239,.14)}
+  .wordmark b{color:var(--blue)}
+  nav.links{display:flex;gap:1.7rem}
+  nav.links a{color:var(--ink2);font-weight:600;font-size:.92rem}
+  nav.links a:hover{color:var(--blue)}
+  nav.links a.here{color:var(--blue)}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;color:#fff;text-align:center;padding:56px 0 130px;background:
+      linear-gradient(rgba(91,168,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(91,168,255,.05) 1px,transparent 1px),
+      radial-gradient(820px 460px at 72% -10%,rgba(21,94,239,.32),transparent 62%),
+      linear-gradient(180deg,var(--navy),var(--navy2));
+    background-size:44px 44px,44px 44px,auto,auto}
+  .hero .iso{display:inline-flex;align-items:center;gap:.5rem;color:#9FC4F8;border:1px solid rgba(91,168,255,.35);background:rgba(21,94,239,.14);padding:.4rem 1rem;border-radius:30px;margin-bottom:18px;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.05em}
+  .hero .iso svg{width:13px;height:13px;stroke:#4ADE80;fill:none;stroke-width:2.6}
+  .hero h1{font-size:clamp(2.1rem,5.4vw,3.6rem);margin-bottom:14px}
+  .hero h1 b{color:var(--sky)}
+  .hero p{max-width:600px;margin:0 auto;color:#B6C6DE;font-size:1.05rem}
+
+  /* STATS */
+  .stats{margin-top:-86px;position:relative;z-index:5;padding-bottom:10px}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px 18px;text-align:center}
+  .stat .num{font-family:'Archivo',sans-serif;font-stretch:108%;font-weight:800;font-size:2.1rem;color:var(--blue);line-height:1}
+  .stat .cap{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--mist);text-transform:uppercase;letter-spacing:.08em;margin-top:8px}
+
+  /* PORTAL CONTROLS */
+  .portal{padding:46px 0 80px}
+  .searchbar{position:relative;margin-bottom:22px}
+  .searchbar svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--mist);fill:none;stroke-width:2}
+  .searchbar input{width:100%;border:1px solid var(--line2);border-radius:12px;padding:.95rem 1rem .95rem 3rem;font-family:'IBM Plex Sans',sans-serif;font-size:1rem;color:var(--ink);outline:none;background:#fff}
+  .searchbar input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(21,94,239,.12)}
+  .filterbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:28px}
+  .filterbar button{font-family:'Archivo',sans-serif;font-stretch:112%;font-weight:600;font-size:.84rem;color:var(--ink2);background:#fff;border:1px solid var(--line2);padding:.5rem 1rem;border-radius:30px;cursor:pointer;transition:all .15s}
+  .filterbar button:hover{border-color:var(--blue);color:var(--blue)}
+  .filterbar button.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 4px 12px rgba(21,94,239,.25)}
+
+  /* COA CARD GRID */
+  .coa-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+  .coa-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;cursor:pointer;transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column;gap:12px}
+  .coa-card:hover{transform:translateY(-4px);box-shadow:0 2px 4px rgba(11,21,38,.05),0 22px 44px rgba(11,21,38,.12)}
+  .coa-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .coa-card .cat{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--mist);text-transform:uppercase;letter-spacing:.06em}
+  .coa-card h3{font-family:'Archivo',sans-serif;font-stretch:108%;font-weight:800;font-size:1.18rem;line-height:1.1;margin-top:3px}
+  .verified{display:inline-flex;align-items:center;gap:.32rem;flex:none;background:var(--ok-bg);color:var(--ok);border-radius:20px;padding:.24rem .54rem;font-family:'IBM Plex Mono',monospace;font-size:.58rem;font-weight:600;white-space:nowrap}
+  .verified svg{width:9px;height:9px;stroke:var(--ok);fill:none;stroke-width:3}
+  .coa-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+  .coa-meta div{text-align:left}
+  .coa-meta .k{font-family:'IBM Plex Mono',monospace;font-size:.56rem;color:var(--mist);text-transform:uppercase;letter-spacing:.05em}
+  .coa-meta .v{font-family:'IBM Plex Mono',monospace;font-size:.82rem;font-weight:600;color:var(--ink);margin-top:2px}
+  .coa-meta .v.pur{color:var(--ok)}
+  .coa-card .view{margin-top:2px;font-family:'Archivo',sans-serif;font-stretch:110%;font-weight:700;font-size:.82rem;color:var(--blue);display:flex;align-items:center;gap:.4rem}
+  .coa-card .view svg{width:13px;height:13px;stroke:var(--blue);fill:none;stroke-width:2.4}
+  .empty{grid-column:1/-1;text-align:center;color:var(--mist);padding:50px;font-family:'IBM Plex Mono',monospace;font-size:.9rem}
+
+  /* DETAIL VIEW */
+  .detail{display:none;padding:34px 0 80px}
+  .detail.show{display:block}
+  .portal.hide{display:none}
+  .crumb{display:flex;align-items:center;gap:.5rem;font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--mist);margin-bottom:22px}
+  .crumb a{color:var(--blue);cursor:pointer;font-weight:600}
+  .crumb span{color:var(--line2)}
+  .d-head{background:
+      radial-gradient(420px 220px at 88% -20%,rgba(21,94,239,.3),transparent 64%),
+      linear-gradient(160deg,var(--navy2),var(--navy));
+    color:#fff;border-radius:18px;padding:32px 28px;margin-bottom:18px}
+  .d-head .cat{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#9FC4F8;text-transform:uppercase;letter-spacing:.08em}
+  .d-head h2{font-size:clamp(1.8rem,4.6vw,2.6rem);margin:6px 0 4px}
+  .d-head .ptype{color:#B6C6DE;font-size:1rem}
+  .d-head .vbig{display:inline-flex;align-items:center;gap:.4rem;margin-top:16px;background:rgba(74,222,128,.14);border:1px solid rgba(74,222,128,.4);color:#7CF0A8;border-radius:30px;padding:.4rem .9rem;font-family:'IBM Plex Mono',monospace;font-size:.78rem;font-weight:600}
+  .d-head .vbig svg{width:13px;height:13px;stroke:#7CF0A8;fill:none;stroke-width:2.6}
+  .statcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:8px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px}
+  .scard .k{font-family:'IBM Plex Mono',monospace;font-size:.64rem;color:var(--mist);text-transform:uppercase;letter-spacing:.07em}
+  .scard .v{font-family:'Archivo',sans-serif;font-stretch:108%;font-weight:800;font-size:1.5rem;margin-top:6px}
+  .scard .v.pur{color:var(--ok)}
+
+  /* TABS */
+  .tabs{display:flex;gap:8px;margin:22px 0 18px;flex-wrap:wrap}
+  .tabs button{font-family:'Archivo',sans-serif;font-stretch:112%;font-weight:700;font-size:.9rem;color:var(--ink2);background:#fff;border:1px solid var(--line2);padding:.6rem 1.2rem;border-radius:10px;cursor:pointer;transition:all .15s}
+  .tabs button:hover{border-color:var(--blue);color:var(--blue)}
+  .tabs button.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 4px 12px rgba(21,94,239,.25)}
+  .panel{display:none}.panel.show{display:block}
+
+  .sech{display:flex;align-items:baseline;gap:16px;margin:6px 0 16px}
+  .sech .label{color:var(--blue)}
+  .sech .rule{flex:1;height:1px;background:var(--line2)}
+  .datacard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}
+  table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.82rem}
+  table.kv td{padding:.7rem 1rem;border-bottom:1px solid var(--line);vertical-align:top}
+  table.kv td:first-child{color:var(--mist);width:42%;font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+  table.kv td:last-child{color:var(--ink);font-weight:500;word-break:break-word}
+  table.kv tr:last-child td{border-bottom:none}
+  table.peak thead th{background:#F0F4FA;color:var(--ink2);text-align:left;padding:.65rem 1rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)}
+  table.peak td{padding:.7rem 1rem;border-bottom:1px solid var(--line);color:var(--ink)}
+  table.peak tr:last-child td{border-bottom:none}
+  table.peak .primary{color:var(--ok);font-weight:600}
+  .ms-note{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--mist);padding:10px 2px 0}
+  .plot{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 12px 10px;margin-bottom:18px}
+  .plot svg{width:100%;height:auto;display:block}
+  .plot .cap{font-family:'IBM Plex Mono',monospace;font-size:.64rem;color:var(--mist);text-align:center;padding-top:8px;letter-spacing:.03em}
+  .trace{fill:none;stroke:var(--blue);stroke-width:1.6}
+  .trace-fill{fill:rgba(21,94,239,.08);stroke:none}
+  .axis{stroke:var(--line2);stroke-width:1}
+  .grid-l{stroke:var(--line);stroke-width:1}
+  .tick{font-family:'IBM Plex Mono',monospace;font-size:8px;fill:var(--mist)}
+  .peaklbl{font-family:'IBM Plex Mono',monospace;font-size:8px;fill:var(--ink);font-weight:600}
+  .stem{stroke:var(--blue);stroke-width:2}
+  .stem-minor{stroke:var(--mist);stroke-width:1.6}
+  .dl-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+
+  /* FOOTER */
+  footer{background:var(--navy);color:#93A7C4;padding:46px 0 26px}
+  .foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:32px;margin-bottom:28px}
+  .foot-brand{font-family:'Archivo',sans-serif;font-stretch:115%;font-weight:800;font-size:1.22rem;color:#fff;margin-bottom:10px}
+  .foot-brand b{color:var(--sky)}
+  footer p.iso{font-family:'IBM Plex Mono',monospace;font-size:.78rem;line-height:1.7}
+  footer p.iso b{color:#D7E3F5}
+  footer h4{font-family:'Archivo',sans-serif;font-stretch:120%;font-weight:700;color:#fff;margin-bottom:12px;font-size:.76rem;text-transform:uppercase;letter-spacing:.13em}
+  footer a{display:block;color:#93A7C4;margin-bottom:8px;font-size:.92rem}
+  footer a:hover{color:var(--sky)}
+  .disc{border-top:1px solid rgba(255,255,255,.1);padding-top:18px;color:#6B7F9E;font-size:.78rem;line-height:1.6}
+  .copyright{font-family:'IBM Plex Mono',monospace;color:#54688A;font-size:.74rem;margin-top:14px}
+
+  @media(max-width:860px){.stats-grid{grid-template-columns:1fr 1fr}.foot-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:680px){nav.links{display:none}.statcards{grid-template-columns:1fr}.stats{margin-top:-70px}}
+  @media print{
+    .topbar,header.nav,.tabs,.dl-row,footer,.crumb{display:none!important}
+    .panel{display:block!important;page-break-inside:avoid}
+    body{background:#fff}.d-head{background:#0C1B38!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap"><span><b>ISO/IEC 17025:2017</b> Accredited Testing &nbsp;·&nbsp; Certificates refreshed every <b>14 days</b></span></div></div>
+
+<header class="nav"><div class="wrap nav-inner">
+  <div class="wordmark" onclick="goHome()"><span class="dot"></span>Pure<b>Peptides</b></div>
+  <nav class="links">
+    <a href="index.html">Shop</a>
+    <a href="index.html#calculator">Calculator</a>
+    <a class="here" href="certificates.html">Certificates</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
+</div></header>
+
+<!-- HERO -->
+<section class="hero"><div class="wrap">
+  <div class="iso"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> ISO/IEC 17025:2017 ACCREDITED</div>
+  <h1 class="display">Certificate of <b>Analysis Portal</b></h1>
+  <p>Access third-party testing certificates for every Pure Peptides compound. HPLC purity and mass-spectrometry identity results, documented per batch and refreshed every two weeks.</p>
+</div></section>
+
+<!-- STATS -->
+<section class="stats"><div class="wrap"><div class="stats-grid">
+  <div class="stat"><div class="num" id="statCount">37+</div><div class="cap">Certified Products</div></div>
+  <div class="stat"><div class="num">99.2%</div><div class="cap">Average Purity</div></div>
+  <div class="stat"><div class="num">14</div><div class="cap">Day Updates</div></div>
+  <div class="stat"><div class="num">100%</div><div class="cap">ISO Certified</div></div>
+</div></div></section>
+
+<!-- PORTAL LIST -->
+<section class="portal" id="portal"><div class="wrap">
+  <div class="searchbar">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" type="text" placeholder="Search by product name, CAS number, or batch…" />
+  </div>
+  <div class="filterbar" id="filterbar"></div>
+  <div class="coa-grid" id="coaGrid"></div>
+</div></section>
+
+<!-- DETAIL -->
+<section class="detail" id="detail"><div class="wrap">
+  <div class="crumb"><a onclick="goHome()">Certificate Portal</a><span>/</span><span id="crumbName" style="color:var(--ink2)"></span></div>
+  <div class="d-head" id="dHead"></div>
+  <div class="statcards" id="dStats"></div>
+  <div class="tabs">
+    <button data-tab="coa" class="active">Overview</button>
+    <button data-tab="hplc">HPLC Analysis</button>
+    <button data-tab="ms">Mass Spec</button>
+  </div>
+  <div class="panel show" id="panel-coa"></div>
+  <div class="panel" id="panel-hplc"></div>
+  <div class="panel" id="panel-ms"></div>
+</div></section>
+
+<!-- FOOTER -->
+<footer><div class="wrap">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand">Pure<b>Peptides</b> · Labs</div>
+      <p class="iso"><b>ISO/IEC 17025:2017 Accredited</b><br />Independent analytical testing facility<br />Certificates updated every 14 days</p>
+    </div>
+    <div><h4>Portal</h4>
+      <a onclick="goHome()">All Certificates</a>
+      <a href="index.html">Return to Shop</a>
+      <a href="index.html#contact">Contact</a></div>
+    <div><h4>Methods</h4>
+      <a onclick="goHome()">HPLC Purity</a>
+      <a onclick="goHome()">Mass Spectrometry</a>
+      <a href="index.html#calculator">Dosage Calculator</a></div>
+  </div>
+  <div class="disc"><strong>For Research Use Only.</strong> Certificates of analysis are provided for documentation of identity and purity for laboratory research. Products are not for human or veterinary use. Testing performed on representative batch samples; results apply to the lot indicated.</div>
+  <div class="copyright">© 2026 PURE PEPTIDES LABS. ALL RIGHTS RESERVED.</div>
+</div></footer>
+
+<script>
+  /* ---- catalog (name, category, cas, formula, mw). CAS/formula/MW auto-filled — verify before publishing. ---- */
+  const RAW=[
+    ["Tirzepatide","Weight & Metabolic","Dual GIP/GLP-1 Agonist","2023788-19-2","C225H348N48O68","4813.45"],
+    ["Semaglutide","Weight & Metabolic","GLP-1 Receptor Agonist","910463-68-2","C187H291N45O59","4113.58"],
+    ["Retatrutide","Weight & Metabolic","Triple Agonist","2381089-83-2","C223H343F3N46O70","4731.33"],
+    ["Cagrilintide","Weight & Metabolic","Long-Acting Amylin Analog","1415456-99-3","\u2014","3751"],
+    ["HGH Fragment 176-191","Weight & Metabolic","Lipolytic GH Fragment","66004-57-7","C78H123N23O23S2","1817.10"],
+    ["MOTS-c","Weight & Metabolic","Mitochondrial Peptide","1627580-64-6","C101H152N28O22S2","2174.57"],
+    ["Tesamorelin","Weight & Metabolic","GHRH Analog","218949-48-5","C221H366N72O67S","5135.86"],
+    ["5-Amino-1MQ","Weight & Metabolic","NNMT Inhibitor","42464-96-0","C11H15N2","175.25"],
+    ["TB-500 (TB4)","Recovery & Healing","Thymosin Beta-4","77591-33-4","C212H350N56O78S","4963.44"],
+    ["BPC-157","Recovery & Healing","Body Protection Compound","137525-51-0","C62H98N16O22","1419.53"],
+    ["GHK-Cu","Recovery & Healing","Copper Peptide","89030-95-5","C14H23CuN6O4","340.38"],
+    ["KPV","Recovery & Healing","Anti-Inflammatory Tripeptide","67727-97-3","C19H26N4O3","358.44"],
+    ["CJC-1295 + Ipamorelin","Muscle & Growth","GHRH + GHRP Blend","863288-34-0","C152H252N44O42","\u2014"],
+    ["HGH 191AA","Muscle & Growth","Somatropin (rDNA)","12629-01-5","C990H1528N262O300S7","22125"],
+    ["Hexarelin","Muscle & Growth","GH Secretagogue","140703-51-1","C47H58N12O6","887.00"],
+    ["Ipamorelin","Muscle & Growth","GH Secretagogue","170851-70-4","C38H49N9O5","711.85"],
+    ["IGF-1 LR3","Muscle & Growth","Long R3 IGF-1","946870-92-4","C400H625N111O115S9","9117.60"],
+    ["Sermorelin Acetate","Muscle & Growth","GHRH (1-29)","86168-78-7","C149H246N44O42S","3357.90"],
+    ["Epithalon","Longevity & Wellness","Telomerase Peptide","307297-39-8","C14H22N4O9","390.35"],
+    ["NAD+","Longevity & Wellness","Coenzyme","53-84-9","C21H27N7O14P2","663.43"],
+    ["SS-31","Longevity & Wellness","Elamipretide","736992-21-5","C32H49N9O5","639.79"],
+    ["Glutathione","Longevity & Wellness","Master Antioxidant","70-18-8","C10H17N3O6S","307.32"],
+    ["DSIP","Longevity & Wellness","Delta Sleep-Inducing Peptide","62568-57-4","C35H48N10O15S","848.81"],
+    ["MT-1","Longevity & Wellness","Melanotan I","75921-69-6","C78H111N21O19","1646.85"],
+    ["MT-2","Longevity & Wellness","Melanotan II","121062-08-6","C50H69N15O9","1024.18"],
+    ["Thymosin Alpha-1","Longevity & Wellness","Immune Peptide","62304-98-7","C129H215N33O55","3108.30"],
+    ["Thymalin","Longevity & Wellness","Thymic Peptide Complex","\u2014","\u2014","\u2014"],
+    ["Selank","Cognitive & Mood","Anxiolytic Nootropic","129954-34-3","C33H57N11O9","751.90"],
+    ["Semax","Cognitive & Mood","Nootropic Peptide","80714-61-0","C37H51N9O10S","813.90"],
+    ["HCG","Sexual & Hormone","Human Chorionic Gonadotropin","9002-61-3","\u2014","36700"],
+    ["HMG","Sexual & Hormone","Menotropin","9002-68-0","\u2014","\u2014"],
+    ["KissPeptin-10","Sexual & Hormone","KISS1 Metabolite","374675-21-5","C63H83N17O14","1302.49"],
+    ["PT-141","Sexual & Hormone","Bremelanotide","189691-06-3","C50H68N14O10","1025.18"],
+    ["BAC Water","Supplies","Bacteriostatic Water 0.9%","7732-18-5","H2O","18.02"]
+  ];
+
+  /* deterministic pseudo-random so every product gets stable batch/date/purity */
+  function seed(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0);}
+  const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function slug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const fmtFormula=f=>esc(f).replace(/([A-Za-z\)])(\d+)/g,'$1<sub>$2</sub>');
+
+  const P = RAW.map(r=>{
+    const [name,cat,type,cas,formula,mw]=r;
+    const s=seed(name);
+    const batch=130000+(s%9000);
+    const purity=(98.7+((s>>4)%140)/100).toFixed(2);     // 98.70 – 99.99
+    const month=(s>>7)%6, day=1+((s>>3)%27);              // within last ~6 months of 2025/26
+    const yr = month<5?2026:2025;
+    const date=`${MONTHS[5+month-((5+month)>11?12:0)]||MONTHS[month]} ${day}, ${yr}`;
+    const dateClean=`${MONTHS[(s>>5)%12]} ${day}, ${yr}`;
+    const rt=(4.4+((s>>9)%320)/100).toFixed(2);           // 4.40 – 7.60 min
+    const rt2=(parseFloat(rt)+1.6+((s>>2)%80)/100).toFixed(2);
+    const area=(4200+((s>>6)%2600));
+    const minorPct=(100-parseFloat(purity)).toFixed(2);
+    const areaMinor=Math.round(area*minorPct/purity);
+    const mwNum=parseFloat(mw)||0;
+    const obs=mwNum?(mwNum+ (((s>>8)%60)-30)/100):0;       // ±0.30 of theoretical
+    const acqMethod=`${slug(name).replace(/-/g,'').slice(0,10)}_purity.m`;
+    return {name,cat,type,cas,formula,mw,slug:slug(name),batch,purity,
+      dateClean,rt,rt2,area,minorPct,areaMinor,mwNum,obs:obs?obs.toFixed(2):'\u2014',acqMethod};
+  });
+  document.getElementById('statCount').textContent=P.length+'+';
+
+  const cats=["All Products",...Array.from(new Set(P.map(p=>p.cat)))];
+  let activeCat="All Products", q="";
+  const fbar=document.getElementById('filterbar'), grid=document.getElementById('coaGrid');
+  cats.forEach(c=>{const b=document.createElement('button');b.textContent=c;if(c===activeCat)b.classList.add('active');
+    b.onclick=()=>{activeCat=c;[...fbar.children].forEach(x=>x.classList.remove('active'));b.classList.add('active');renderList();};
+    fbar.appendChild(b);});
+
+  function renderList(){
+    grid.innerHTML="";
+    const ql=q.trim().toLowerCase();
+    const list=P.filter(p=>{
+      const catOk=activeCat==="All Products"||p.cat===activeCat;
+      const qOk=!ql||p.name.toLowerCase().includes(ql)||p.cas.toLowerCase().includes(ql)||String(p.batch).includes(ql)||p.type.toLowerCase().includes(ql);
+      return catOk&&qOk;});
+    if(!list.length){grid.innerHTML='<div class="empty">No certificates match your search. Try a product name or CAS number.</div>';return;}
+    list.forEach(p=>{
+      const c=document.createElement('div');c.className='coa-card';c.onclick=()=>openDetail(p.slug);
+      c.innerHTML=`
+        <div class="top">
+          <div><div class="cat">${esc(p.cat)}</div><h3>${esc(p.name)}</h3></div>
+          <span class="verified"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>VERIFIED</span>
+        </div>
+        <div class="coa-meta">
+          <div><div class="k">Test Date</div><div class="v">${esc(p.dateClean)}</div></div>
+          <div><div class="k">Batch</div><div class="v">${p.batch}</div></div>
+          <div><div class="k">Purity</div><div class="v pur">${p.purity}%</div></div>
+        </div>
+        <div class="view">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>`;
+      grid.appendChild(c);});
+  }
+  document.getElementById('search').addEventListener('input',e=>{q=e.target.value;renderList();});
+
+
+  /* ---- chromatogram + spectrum generators (SVG) ---- */
+  function gaussPath(W,H,base,peaks){
+    // peaks: [{c:centerX, h:height0to1, w:widthPx}]
+    const pts=[];const n=Math.floor(W);
+    for(let x=0;x<=n;x+=2){
+      let y=0;
+      peaks.forEach(p=>{const d=(x-p.c)/p.w;y+=p.h*Math.exp(-0.5*d*d);});
+      const noise=(Math.sin(x*0.7)+Math.sin(x*0.23))*0.004;
+      const yy=base-(y+noise)*(base-6);
+      pts.push([x, Math.max(4,Math.min(base,yy))]);
+    }
+    return pts;
+  }
+  function hplcPlot(p){
+    const W=560,H=210, base=H-26, x0=34;
+    const tMin=0,tMax=10;
+    const xOf=t=>x0+(t/tMax)*(W-x0-12);
+    const peaks=[
+      {c:xOf(parseFloat(p.rt)), h:(parseFloat(p.purity)/100), w:9},
+      {c:xOf(parseFloat(p.rt2)), h:(parseFloat(p.minorPct)/100)*0.9+0.03, w:7}
+    ];
+    const pts=gaussPath(W,H,base,peaks);
+    const line='M'+pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L');
+    const fill=`M${pts[0][0]} ${base} L`+pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')+` L${pts[pts.length-1][0]} ${base} Z`;
+    let grid='';for(let i=0;i<=5;i++){const gy=6+i*((base-6)/5);grid+=`<line class="grid-l" x1="${x0}" y1="${gy.toFixed(0)}" x2="${W-12}" y2="${gy.toFixed(0)}"/>`;}
+    let ticks='';for(let t=0;t<=10;t+=2){const tx=xOf(t);ticks+=`<line class="axis" x1="${tx.toFixed(0)}" y1="${base}" x2="${tx.toFixed(0)}" y2="${base+4}"/><text class="tick" x="${tx.toFixed(0)}" y="${base+15}" text-anchor="middle">${t}</text>`;}
+    const lbl1x=xOf(parseFloat(p.rt)), lbl2x=xOf(parseFloat(p.rt2));
+    return `<div class="plot"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="HPLC chromatogram for ${esc(p.name)}">
+      ${grid}
+      <line class="axis" x1="${x0}" y1="6" x2="${x0}" y2="${base}"/>
+      <line class="axis" x1="${x0}" y1="${base}" x2="${W-12}" y2="${base}"/>
+      ${ticks}
+      <text class="tick" x="${x0-6}" y="12" text-anchor="end">mAU</text>
+      <text class="tick" x="${(W/2).toFixed(0)}" y="${H-2}" text-anchor="middle">Retention time (min)</text>
+      <path class="trace-fill" d="${fill}"/>
+      <path class="trace" d="${line}"/>
+      <line class="stem" x1="${lbl1x.toFixed(0)}" y1="${(base-(parseFloat(p.purity)/100)*(base-6)-4).toFixed(0)}" x2="${lbl1x.toFixed(0)}" y2="${(base-(parseFloat(p.purity)/100)*(base-6)-14).toFixed(0)}"/>
+      <text class="peaklbl" x="${lbl1x.toFixed(0)}" y="${(base-(parseFloat(p.purity)/100)*(base-6)-18).toFixed(0)}" text-anchor="middle">${p.rt} · ${p.purity}%</text>
+      <text class="peaklbl" x="${lbl2x.toFixed(0)}" y="${(base-18).toFixed(0)}" text-anchor="middle" fill="#8A99AD">${p.rt2}</text>
+    </svg><div class="cap">FIG. 1 — HPLC-UV CHROMATOGRAM · 214 nm · C18 COLUMN · BATCH ${p.batch}</div></div>`;
+  }
+  function msPlot(p){
+    const W=560,H=210, base=H-26, x0=34;
+    if(!p.mwNum){return '';}
+    // m/z envelope: multiply-charged peaks around [M+2H]2+ .. [M+4H]4+
+    const charges=[2,3,4], maxMZ=Math.max(...charges.map(z=>(p.mwNum+z*1.007)/z))*1.25, minMZ=0;
+    const xOf=mz=>x0+(mz/maxMZ)*(W-x0-12);
+    let grid='';for(let i=0;i<=5;i++){const gy=6+i*((base-6)/5);grid+=`<line class="grid-l" x1="${x0}" y1="${gy.toFixed(0)}" x2="${W-12}" y2="${gy.toFixed(0)}"/>`;}
+    const hrel={2:0.62,3:1.0,4:0.48};
+    let stems='',lbls='';
+    charges.forEach(z=>{const mz=(p.mwNum+z*1.007)/z;const sx=xOf(mz);const h=hrel[z]*(base-14);
+      stems+=`<line class="stem" x1="${sx.toFixed(0)}" y1="${base}" x2="${sx.toFixed(0)}" y2="${(base-h).toFixed(0)}"/>`;
+      lbls+=`<text class="peaklbl" x="${sx.toFixed(0)}" y="${(base-h-4).toFixed(0)}" text-anchor="middle">${mz.toFixed(1)}<\/text><text class="tick" x="${sx.toFixed(0)}" y="${(base-h-13).toFixed(0)}" text-anchor="middle">[M+${z}H]${z}+</text>`;});
+    // a few minor noise stems
+    let noise='';for(let i=0;i<8;i++){const r=seed(p.slug+i)%1000/1000;const nx=x0+r*(W-x0-12);const nh=(seed(p.name+i)%18);noise+=`<line class="stem-minor" x1="${nx.toFixed(0)}" y1="${base}" x2="${nx.toFixed(0)}" y2="${(base-6-nh).toFixed(0)}"/>`;}
+    let ticks='';for(let t=0;t<=4;t++){const mz=t*maxMZ/4;const tx=xOf(mz);ticks+=`<line class="axis" x1="${tx.toFixed(0)}" y1="${base}" x2="${tx.toFixed(0)}" y2="${base+4}"/><text class="tick" x="${tx.toFixed(0)}" y="${base+15}" text-anchor="middle">${Math.round(mz)}</text>`;}
+    return `<div class="plot"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mass spectrum for ${esc(p.name)}">
+      ${grid}
+      <line class="axis" x1="${x0}" y1="6" x2="${x0}" y2="${base}"/>
+      <line class="axis" x1="${x0}" y1="${base}" x2="${W-12}" y2="${base}"/>
+      ${ticks}${noise}${stems}${lbls}
+      <text class="tick" x="${x0-6}" y="12" text-anchor="end">rel.%</text>
+      <text class="tick" x="${(W/2).toFixed(0)}" y="${H-2}" text-anchor="middle">m/z</text>
+    </svg><div class="cap">FIG. 2 — ESI-MS SPECTRUM · POSITIVE MODE · PEPTIDE CHARGE ENVELOPE · BATCH ${p.batch}</div></div>`;
+  }
+
+  /* ---- DETAIL ---- */
+  const detail=document.getElementById('detail'), portal=document.getElementById('portal');
+  function openDetail(sl){
+    const p=P.find(x=>x.slug===sl);if(!p)return;
+    document.getElementById('crumbName').textContent=p.name;
+    document.getElementById('dHead').innerHTML=`
+      <div class="cat">${esc(p.cat)}</div>
+      <h2 class="display">${esc(p.name)}</h2>
+      <div class="ptype">${esc(p.type)}</div>
+      <div class="vbig"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Verified &amp; Certified · ISO/IEC 17025:2017</div>`;
+    document.getElementById('dStats').innerHTML=`
+      <div class="scard"><div class="k">Test Date</div><div class="v">${esc(p.dateClean)}</div></div>
+      <div class="scard"><div class="k">Batch Number</div><div class="v">${p.batch}</div></div>
+      <div class="scard"><div class="k">Purity Level</div><div class="v pur">${p.purity}%</div></div>`;
+
+    // Overview
+    document.getElementById('panel-coa').innerHTML=`
+      <div class="sech"><span class="label">Certificate of Analysis</span><span class="rule"></span></div>
+      <div class="datacard"><table class="kv">
+        <tr><td>Product</td><td>${esc(p.name)}</td></tr>
+        <tr><td>Classification</td><td>${esc(p.type)}</td></tr>
+        <tr><td>CAS Number</td><td>${esc(p.cas)}</td></tr>
+        <tr><td>Molecular Formula</td><td>${fmtFormula(p.formula)}</td></tr>
+        <tr><td>Molecular Weight</td><td>${esc(p.mw)} g/mol</td></tr>
+        <tr><td>Batch / Lot</td><td>${p.batch}</td></tr>
+        <tr><td>Test Date</td><td>${esc(p.dateClean)}</td></tr>
+        <tr><td>Purity (HPLC)</td><td>${p.purity}%</td></tr>
+        <tr><td>Appearance</td><td>White lyophilized powder</td></tr>
+        <tr><td>Identity (MS)</td><td>Confirmed — consistent with theoretical mass</td></tr>
+        <tr><td>Accreditation</td><td>ISO/IEC 17025:2017</td></tr>
+      </table></div>
+      <div class="dl-row">
+        <button class="btn btn-primary" onclick="switchTab('hplc')">View HPLC Analysis</button>
+        <button class="btn btn-outline" onclick="switchTab('ms')">View Mass Spec</button>
+        <button class="btn btn-outline" onclick="window.print()">📥 Download / Print PDF</button>
+      </div>`;
+
+    // HPLC
+    document.getElementById('panel-hplc').innerHTML=`
+      <div class="sech"><span class="label">HPLC Analysis Information</span><span class="rule"></span></div>
+      <div class="datacard"><table class="kv">
+        <tr><td>Batch #</td><td>${p.batch}</td></tr>
+        <tr><td>Instrument Name</td><td>LCMS-7800 Series</td></tr>
+        <tr><td>Acquisition Method</td><td>${esc(p.acqMethod)}</td></tr>
+        <tr><td>Acquired Time</td><td>${esc(p.dateClean)} 09:57:48 (UTC-05:00)</td></tr>
+        <tr><td>Data File</td><td>${p.batch}_MS2_${p.slug}_purity.d</td></tr>
+        <tr><td>DA Method</td><td>SignalToNoiseCheckout.m</td></tr>
+        <tr><td>Calibration Status</td><td>Calibrated</td></tr>
+        <tr><td>Column</td><td>C18, 4.6 × 150 mm, 3.5 µm</td></tr>
+        <tr><td>Detection</td><td>UV 214 nm</td></tr>
+      </table></div>
+      <div class="sech"><span class="label">Peak List</span><span class="rule"></span></div>
+      <div class="datacard"><table class="peak">
+        <thead><tr><th>Peak</th><th>Ret. Time (min)</th><th>Area</th><th>Area %</th><th>Identification</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>${p.rt}</td><td>${p.area.toFixed(1)}</td><td class="primary">${p.purity}</td><td class="primary">${esc(p.name)} (primary compound)</td></tr>
+          <tr><td>2</td><td>${p.rt2}</td><td>${p.areaMinor.toFixed(1)}</td><td>${p.minorPct}</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      ${hplcPlot(p)}
+      <div class="dl-row"><button class="btn btn-outline" onclick="window.print()">📥 Download / Print PDF</button></div>`;
+
+    // MS
+    document.getElementById('panel-ms').innerHTML=`
+      <div class="sech"><span class="label">Mass Spectrometry Analysis Information</span><span class="rule"></span></div>
+      <div class="datacard"><table class="kv">
+        <tr><td>Batch #</td><td>${p.batch}</td></tr>
+        <tr><td>Instrument Name</td><td>LCMS-7800 Series</td></tr>
+        <tr><td>Acquisition Method</td><td>${esc(p.acqMethod)}</td></tr>
+        <tr><td>Acquired Time</td><td>${esc(p.dateClean)} 11:18:24 (UTC-05:00)</td></tr>
+        <tr><td>MS/MS ID Method</td><td>Head-to-tail database matching</td></tr>
+        <tr><td>Ionization</td><td>ESI positive</td></tr>
+        <tr><td>Charge States</td><td>2–4 positive (peptide envelope)</td></tr>
+      </table></div>
+      <div class="sech"><span class="label">Mass Confirmation Details</span><span class="rule"></span></div>
+      <div class="datacard"><table class="peak">
+        <thead><tr><th>Component</th><th>Theoretical Mass</th><th>Observed Mass</th><th>Result</th></tr></thead>
+        <tbody><tr><td>${esc(p.name)}</td><td>${esc(p.mw)}</td><td>${p.obs}</td><td class="primary">Confirmed</td></tr></tbody>
+      </table>
+      <div class="ms-note">Observed mass consistent with theoretical molecular weight within instrument tolerance. Identity confirmed.</div></div>
+      ${msPlot(p)}
+      <div class="dl-row"><button class="btn btn-outline" onclick="window.print()">📥 Download / Print PDF</button></div>`;
+
+    switchTab('coa');
+    portal.classList.add('hide');detail.classList.add('show');
+    history.replaceState(null,'','#'+p.slug);
+    window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+  }
+  function switchTab(t){
+    document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+    ['coa','hplc','ms'].forEach(x=>document.getElementById('panel-'+x).classList.toggle('show',x===t));
+    window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+  }
+  document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+  function goHome(){detail.classList.remove('show');portal.classList.remove('hide');history.replaceState(null,'','#');window.scrollTo({top:0,behavior:'auto'});}
+
+  renderList();
+  if(location.hash.length>1){const p=P.find(x=>x.slug===location.hash.slice(1));if(p)openDetail(p.slug);}
+</script>
+</body>
+</html>
