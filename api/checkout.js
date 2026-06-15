@@ -1,75 +1,48 @@
-// checkout.js
-// Wires the Checkout button in the cart drawer to PeptidePay.
-// Drop this file into your repo root and add:
-//   <script src="checkout.js"></script>  before </body> in index.html
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-async function initCheckout() {
-  // The checkout button is .btn inside .cart-foot
-  const cartFoot = document.querySelector('.cart-foot');
-  if (!cartFoot) return;
+  const { amount_cents, currency, items } = req.body;
 
-  const checkoutBtn = cartFoot.querySelector('.btn');
-  if (!checkoutBtn) return;
+  if (!amount_cents || amount_cents < 100) {
+    return res.status(400).json({ error: 'Invalid amount' });
+  }
 
-  checkoutBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
+  const idempotencyKey = `pp-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-    // --- Read subtotal from .cart-sub b (the blue dollar amount) ---
-    const subtotalEl = document.querySelector('.cart-sub b');
-    const subtotalText = subtotalEl?.textContent?.replace(/[^0-9.]/g, '') || '0';
-    const subtotalUSD = parseFloat(subtotalText);
-
-    if (subtotalUSD < 1) {
-      alert('Your cart is empty.');
-      return;
-    }
-
-    // --- Collect cart items for metadata ---
-    const cartItems = [];
-    document.querySelectorAll('.citem').forEach(el => {
-      const name  = el.querySelector('.ci-top b')?.textContent?.trim();
-      const qty   = el.querySelector('.qty span')?.textContent?.trim();
-      const price = el.querySelector('.ci-price')?.childNodes[0]?.textContent?.replace(/[^0-9.]/g, '');
-      const tier  = el.querySelector('.tier-pills button.active')?.textContent?.trim();
-      if (name) cartItems.push({ name, qty, price, tier });
+  try {
+    const response = await fetch('https://peptide-pay.com/api/v1/checkout/init', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.PEPTIDEPAY_API_KEY}`,
+        'Idempotency-Key': idempotencyKey,
+      },
+      body: JSON.stringify({
+        amount_cents,
+        currency: currency || 'USD',
+        success_url: 'https://purepeptides.supply/index.html',
+        cancel_url:  'https://purepeptides.supply/index.html',
+        webhook_url: 'https://purepeptides.supply/api/webhook',
+        metadata: {
+          order_id: idempotencyKey,
+          items: JSON.stringify(items || []),
+        },
+      }),
     });
 
-    // --- Disable button & show loading ---
-    const originalText = checkoutBtn.textContent;
-    checkoutBtn.disabled = true;
-    checkoutBtn.textContent = 'Processing…';
-
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount_cents: Math.round(subtotalUSD * 100),
-          currency: 'USD',
-          items: cartItems,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.url) {
-        throw new Error(data.error || 'Checkout failed');
-      }
-
-      // Redirect to PeptidePay hosted checkout page
-      window.location.href = data.url;
-
-    } catch (err) {
-      console.error('Checkout error:', err);
-      checkoutBtn.disabled = false;
-      checkoutBtn.textContent = originalText;
-      alert('Something went wrong. Please try again.');
+    if (!response.ok) {
+      const err = await response.json();
+      console.error('PeptidePay error:', err);
+      return res.status(502).json({ error: 'Payment provider error', detail: err });
     }
-  });
-}
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initCheckout);
-} else {
-  initCheckout();
+    const session = await response.json();
+    return res.status(200).json({ url: session.url, session_id: session.id });
+
+  } catch (err) {
+    console.error('Checkout error:', err);
+    return res.status(500).json({ error: 'Internal error' });
+  }
 }
